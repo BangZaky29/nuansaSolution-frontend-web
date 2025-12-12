@@ -1,9 +1,10 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useToast } from '../common/ToastContainer'
-import { LogOut, User, Settings, ChevronDown } from 'lucide-react'
+import { LogOut, User, Settings, ChevronDown, Menu, X } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
 import './Header.css'
+import '../../styles/mobile/Header.mobile.css'
 import LogoImage from '../../assets/NS_blank_02.png'
 
 
@@ -12,6 +13,7 @@ const Header = () => {
   const { showSuccess, showInfo } = useToast()
   const navigate = useNavigate()
   const [showDropdown, setShowDropdown] = useState(false)
+  const [mobileOpen, setMobileOpen] = useState(false)
   const dropdownRef = useRef(null)
 
   // Close dropdown when clicking outside
@@ -28,6 +30,7 @@ const Header = () => {
 
   const handleLogout = async () => {
     setShowDropdown(false)
+    setMobileOpen(false)
     await logout()
     showInfo('Anda telah keluar dari akun')
     navigate('/')
@@ -64,6 +67,14 @@ const Header = () => {
                 className="logo-image"
               />
             </Link>
+
+            <button
+              className="hamburger-btn"
+              aria-label="Toggle navigation"
+              onClick={() => setMobileOpen(!mobileOpen)}
+            >
+              {mobileOpen ? <X size={22} /> : <Menu size={22} />}
+            </button>
 
           {/* Navigation */}
           <nav className="nav">
@@ -132,6 +143,51 @@ const Header = () => {
             )}
           </div>
         </div>
+        {mobileOpen && (
+          <div className="mobile-nav">
+            <div className="mobile-nav-content">
+              <div className="mobile-links">
+                <Link to="/" className="mobile-link" onClick={() => setMobileOpen(false)}>Beranda</Link>
+                <Link to="/layanan" className="mobile-link" onClick={() => setMobileOpen(false)}>Layanan</Link>
+                <Link to="/tentang" className="mobile-link" onClick={() => setMobileOpen(false)}>Tentang</Link>
+                <Link to="/kontak" className="mobile-link" onClick={() => setMobileOpen(false)}>Kontak</Link>
+              </div>
+              <div className="mobile-auth">
+                {isAuthenticated ? (
+                  <div className="mobile-user">
+                    <div className="mobile-user-row">
+                      <div className="profile-avatar" style={{ backgroundColor: getRandomColor(user.email) }}>
+                        {getInitials(user.email)}
+                      </div>
+                      <div className="mobile-user-info">
+                        <div className="mobile-user-email">{user.email}</div>
+                        <div className="mobile-user-phone">{user.phone}</div>
+                      </div>
+                    </div>
+                    <div className="mobile-actions">
+                      <button className="mobile-btn" onClick={() => { setMobileOpen(false); navigate('/profile') }}>
+                        <User size={18} />
+                        <span>Profil</span>
+                      </button>
+                      <button className="mobile-btn" onClick={() => { setMobileOpen(false); navigate('/settings') }}>
+                        <Settings size={18} />
+                        <span>Pengaturan</span>
+                      </button>
+                      <button className="mobile-btn logout" onClick={handleLogout}>
+                        <LogOut size={18} />
+                        <span>Keluar</span>
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <Link to="/login" className="btn btn-primary btn-mobile-login" onClick={() => setMobileOpen(false)}>
+                    Masuk
+                  </Link>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </header>
   )

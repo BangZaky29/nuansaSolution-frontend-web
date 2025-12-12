@@ -1,0 +1,131 @@
+.hamburger-btn {
+  display: none;
+  background: var(--white);
+  border: 1px solid var(--border-gray);
+  color: var(--dark-gray);
+  border-radius: 8px;
+  padding: 8px;
+}
+
+@media (max-width: 768px) {
+  .hamburger-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+  }
+
+  .nav {
+    display: none;
+  }
+
+  .auth-section .btn-header {
+    display: none;
+  }
+
+  .mobile-nav {
+    position: fixed;
+    top: 64px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--white);
+    border-top: 1px solid var(--border-gray);
+    z-index: 1000;
+  }
+
+  .mobile-nav-content {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    gap: 16px;
+    padding: 16px;
+  }
+
+  .mobile-links {
+    display: grid;
+    gap: 12px;
+  }
+
+  .mobile-link {
+    text-decoration: none;
+    color: var(--dark-gray);
+    font-weight: 600;
+    padding: 12px 14px;
+    border: 1px solid var(--border-gray);
+    border-radius: 10px;
+  }
+
+  .mobile-auth {
+    margin-top: 8px;
+  }
+
+  .mobile-user {
+    display: grid;
+    gap: 12px;
+  }
+
+  .mobile-user-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid var(--border-gray);
+    border-radius: 12px;
+    padding: 10px 12px;
+  }
+
+  .mobile-user-info {
+    display: grid;
+    gap: 4px;
+  }
+
+  .mobile-user-email {
+    font-weight: 600;
+    color: var(--dark-gray);
+  }
+
+  .mobile-user-phone {
+    font-size: 12px;
+    color: var(--dark-gray);
+    opacity: 0.7;
+  }
+
+  .mobile-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+  }
+
+  .mobile-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border: 1px solid var(--border-gray);
+    border-radius: 10px;
+    background: var(--white);
+    color: var(--dark-gray);
+  }
+
+  .mobile-btn.logout {
+    border-color: #FCA5A5;
+    color: #EF4444;
+    background: #FFF1F2;
+  }
+
+  .btn-mobile-login {
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    padding: 12px 14px;
+    border-radius: 12px;
+  }
+
+  .profile-email {
+    display: none;
+  }
+
+  .logo-image {
+    height: 96px;
+  }
+}
