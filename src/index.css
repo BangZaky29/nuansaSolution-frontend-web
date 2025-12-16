@@ -162,3 +162,21 @@ body {
 .toast-container > * {
   pointer-events: all;
 }
+
+/* Tambahkan di index.css */
+@media (max-width: 480px) {
+  .btn {
+    min-height: 44px; /* iOS touch target */
+    min-width: 44px;
+  }
+  
+  .form-input {
+    font-size: 16px; /* Prevent zoom on iOS */
+  }
+}
+
+/* Tambahkan touch gestures */
+.mobile-nav {
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
