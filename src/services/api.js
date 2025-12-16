@@ -17,6 +17,12 @@ api.interceptors.request.use(
   (config) => {
     const token = storage.getToken()
     if (token) {
+      // Cek apakah token masih valid
+      if (!storage.isTokenValid()) {
+        storage.clearAuth()
+        window.location.href = '/login'
+        return Promise.reject(new Error('Token expired'))
+      }
       config.headers.Authorization = `Bearer ${token}`
     }
     return config
@@ -46,7 +52,8 @@ export const authService = {
     const response = await api.post('/auth/register', {
       email,
       phone,
-      password
+      password,
+      password_confirm: password
     })
     return response.data
   },
@@ -92,25 +99,80 @@ export const userService = {
 // Payment Services
 export const paymentService = {
   // Create payment
-  createPayment: async (userId, packageName, grossAmount) => {
-    const response = await api.post('/payment/create', {
-      user_id: userId,
-      package_name: packageName,
-      gross_amount: grossAmount
-    })
-    return response.data
+  createPayment: async (userId, packageName, grossAmount, paymentMethod = 'va_bca') => {
+    try {
+      const response = await api.post('/payment/create', {
+        user_id: userId,
+        package_name: packageName,
+        gross_amount: grossAmount,
+        payment_method: paymentMethod
+      })
+      return response.data
+    } catch (error) {
+      let errorMessage = 'Gagal membuat pembayaran'
+      
+      if (error.response) {
+        switch (error.response.status) {
+          case 400:
+            errorMessage = error.response.data?.message || 'Data pembayaran tidak valid'
+            break
+          case 401:
+            errorMessage = 'Anda harus login terlebih dahulu'
+            break
+          case 500:
+            errorMessage = 'Server error. Silakan coba lagi nanti'
+            break
+          default:
+            errorMessage = error.response.data?.message || errorMessage
+        }
+      } else if (error.request) {
+        errorMessage = 'Tidak dapat terhubung ke server'
+      }
+      
+      return {
+        success: false,
+        error: errorMessage
+      }
+    }
   },
 
   // Check payment status
   checkStatus: async (orderId) => {
-    const response = await api.get(`/payment/${orderId}/status`)
-    return response.data
+    try {
+      const response = await api.get(`/payment/${orderId}/status`)
+      return response.data
+    } catch (error) {
+      return {
+        success: false,
+        error: error.response?.data?.message || 'Gagal memeriksa status pembayaran'
+      }
+    }
   },
 
   // Cancel payment
   cancelPayment: async (orderId) => {
-    const response = await api.post(`/payment/${orderId}/cancel`)
-    return response.data
+    try {
+      const response = await api.post(`/payment/${orderId}/cancel`)
+      return response.data
+    } catch (error) {
+      return {
+        success: false,
+        error: error.response?.data?.message || 'Gagal membatalkan pembayaran'
+      }
+    }
+  },
+
+  // Get user payment history
+  getPaymentHistory: async (userId) => {
+    try {
+      const response = await api.get(`/payment/history/${userId}`)
+      return response.data
+    } catch (error) {
+      return {
+        success: false,
+        error: error.response?.data?.message || 'Gagal mengambil riwayat pembayaran'
+      }
+    }
   }
 }
 

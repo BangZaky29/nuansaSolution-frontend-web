@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useAuth } from '../../context/AuthContext'
 import { useToast } from '../common/ToastContainer'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate, Link, useSearchParams } from 'react-router-dom'
 import { Mail, Lock, Eye, EyeOff, AlertCircle } from 'lucide-react'
 import './AuthForm.css'
 
@@ -9,6 +9,7 @@ const LoginForm = () => {
   const { login } = useAuth()
   const { showSuccess, showError } = useToast()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const [formData, setFormData] = useState({
     email: '',
@@ -17,6 +18,16 @@ const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [errors, setErrors] = useState({})
   const [loading, setLoading] = useState(false)
+
+  // Check if there's a redirect parameter
+  const redirectPath = searchParams.get('redirect')
+
+  useEffect(() => {
+    // Show info if redirected from checkout
+    if (redirectPath === 'checkout') {
+      showError('Anda harus login terlebih dahulu untuk melanjutkan pembayaran')
+    }
+  }, [redirectPath, showError])
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -67,8 +78,20 @@ const LoginForm = () => {
       
       if (result.success) {
         showSuccess(`Selamat datang kembali, ${result.data.user.email}!`)
+        
+        // Check if there's a saved package to checkout
+        const savedPackage = sessionStorage.getItem('selectedPackage')
+        
         setTimeout(() => {
-          navigate('/')
+          if (redirectPath === 'checkout' && savedPackage) {
+            // Redirect to checkout with saved package
+            navigate('/checkout', { 
+              state: { package: JSON.parse(savedPackage) } 
+            })
+          } else {
+            // Normal redirect to home
+            navigate('/')
+          }
         }, 500)
       } else {
         showError(result.error || 'Login gagal. Silakan coba lagi.')
@@ -89,6 +112,12 @@ const LoginForm = () => {
           </div>
           <h2>Selamat Datang Kembali</h2>
           <p>Masuk ke akun Nuansa Legal Anda</p>
+          {redirectPath === 'checkout' && (
+            <div className="redirect-info">
+              <AlertCircle size={16} />
+              <span>Login untuk melanjutkan ke pembayaran</span>
+            </div>
+          )}
         </div>
 
         <form onSubmit={handleSubmit} className="auth-form">
@@ -171,7 +200,10 @@ const LoginForm = () => {
         <div className="auth-form-footer">
           <p>
             Belum punya akun?{' '}
-            <Link to="/register" className="auth-link">
+            <Link 
+              to={redirectPath ? `/register?redirect=${redirectPath}` : '/register'} 
+              className="auth-link"
+            >
               Daftar sekarang
             </Link>
           </p>

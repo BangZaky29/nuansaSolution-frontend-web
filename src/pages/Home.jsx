@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { Scale, FileText, Users, Shield } from 'lucide-react'
+import PricingPackages from '../components/pricing/PricingPackages'
 import './Home.css'
 
 const Home = () => {
@@ -79,6 +80,9 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      {/* Pricing Packages Section */}
+      <PricingPackages />
 
       {/* CTA Section */}
       {!isAuthenticated && (

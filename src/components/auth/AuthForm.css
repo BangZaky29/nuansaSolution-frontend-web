@@ -186,3 +186,36 @@
     height: 56px;
   }
 }
+
+/* Add this to existing AuthForm.css */
+
+.redirect-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(135deg, #FEF3C7, #FEE2E2);
+  border-radius: 0.5rem;
+  border-left: 4px solid #F59E0B;
+  color: #92400E;
+  font-size: 0.9rem;
+  font-weight: 600;
+  animation: slideDown 0.3s ease-out;
+}
+
+.redirect-info svg {
+  flex-shrink: 0;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
