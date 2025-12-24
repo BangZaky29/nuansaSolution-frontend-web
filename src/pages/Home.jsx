@@ -1,11 +1,111 @@
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { Scale, FileText, Users, Shield } from 'lucide-react'
+import { userService } from '../services/api'
+import { useToast } from '../components/common/ToastContainer'
+import { Scale, FileText, Users, Shield, FileCheck, Calculator, Receipt, FileQuestion, Briefcase, Lock } from 'lucide-react'
 import PricingPackages from '../components/pricing/PricingPackages'
 import './Home.css'
 
 const Home = () => {
   const { isAuthenticated, user } = useAuth()
+  const { showError, showInfo } = useToast()
+  const [hasAccess, setHasAccess] = useState(false)
+  const [checkingAccess, setCheckingAccess] = useState(false)
+
+  // Check user access on mount and when window gains focus (after payment)
+  useEffect(() => {
+    const checkAccess = async () => {
+      if (!isAuthenticated || !user?.id) {
+        setHasAccess(false)
+        return
+      }
+
+      setCheckingAccess(true)
+      try {
+        const response = await userService.checkAccess(user.id)
+        setHasAccess(response.access === true)
+      } catch (error) {
+        console.error('Error checking access:', error)
+        setHasAccess(false)
+      } finally {
+        setCheckingAccess(false)
+      }
+    }
+
+    checkAccess()
+
+    // Refresh access when window gains focus (useful after returning from payment page)
+    const handleFocus = () => {
+      if (isAuthenticated && user?.id) {
+        checkAccess()
+      }
+    }
+
+    window.addEventListener('focus', handleFocus)
+    return () => window.removeEventListener('focus', handleFocus)
+  }, [isAuthenticated, user])
+
+  // Tools data
+  const tools = [
+    {
+      id: 'surat-kuasa',
+      title: 'Generator Surat Kuasa',
+      description: 'Buat surat kuasa secara cepat dan mudah',
+      icon: FileCheck,
+      url: 'https://nuansasolution.id/surat-kuasa/'
+    },
+    {
+      id: 'calculator-pph',
+      title: 'Kalkulator PPh',
+      description: 'Hitung Pajak Penghasilan dengan mudah',
+      icon: Calculator,
+      url: 'https://nuansasolution.id/calculator-PPH/'
+    },
+    {
+      id: 'calculator-properti',
+      title: 'Kalkulator Pajak Properti',
+      description: 'Hitung pajak properti Anda',
+      icon: Calculator,
+      url: 'https://nuansasolution.id/kalkulator-pajak-properti/'
+    },
+    {
+      id: 'surat-pernyataan',
+      title: 'Surat Pernyataan',
+      description: 'Buat surat pernyataan resmi',
+      icon: Receipt,
+      url: 'https://nuansasolution.id/surat-pernyataan/'
+    },
+    {
+      id: 'surat-permohonan',
+      title: 'Surat Permohonan',
+      description: 'Buat surat permohonan formal',
+      icon: FileQuestion,
+      url: 'https://nuansasolution.id/surat-permohonan/'
+    },
+    {
+      id: 'surat-perintah-kerja',
+      title: 'Surat Perintah Kerja',
+      description: 'Buat surat perintah kerja',
+      icon: Briefcase,
+      url: 'https://nuansasolution.id/surat-perintah-kerja/'
+    }
+  ]
+
+  const handleToolClick = (tool) => {
+    if (!isAuthenticated) {
+      showError('Silakan login terlebih dahulu untuk mengakses tools')
+      return
+    }
+
+    if (!hasAccess) {
+      showError('Anda harus memiliki paket aktif untuk mengakses tools. Silakan berlangganan terlebih dahulu.')
+      return
+    }
+
+    // Open link in new tab
+    window.open(tool.url, '_blank')
+  }
 
   return (
     <div className="home">
@@ -77,6 +177,44 @@ const Home = () => {
               <h3>Keamanan Terjamin</h3>
               <p>Data dan informasi Anda dijamin aman dengan sistem enkripsi tingkat enterprise.</p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Tools Section */}
+      <section className="tools">
+        <div className="container">
+          <h2 className="section-title">Web Layanan</h2>
+          <div className="tools-grid">
+            {tools.map((tool) => {
+              const Icon = tool.icon
+              const canAccess = isAuthenticated && hasAccess
+              
+              return (
+                <div
+                  key={tool.id}
+                  className={`tool-card ${!canAccess ? 'locked' : ''}`}
+                  onClick={() => handleToolClick(tool)}
+                  style={{ cursor: canAccess ? 'pointer' : 'not-allowed' }}
+                >
+                  <div className="tool-icon">
+                    {canAccess ? (
+                      <Icon size={40} />
+                    ) : (
+                      <Lock size={40} />
+                    )}
+                  </div>
+                  <h3>{tool.title}</h3>
+                  <p>{tool.description}</p>
+                  {!canAccess && (
+                    <div className="tool-lock-badge">
+                      <Lock size={16} />
+                      <span>Diperlukan Paket Aktif</span>
+                    </div>
+                  )}
+                </div>
+              )
+            })}
           </div>
         </div>
       </section>

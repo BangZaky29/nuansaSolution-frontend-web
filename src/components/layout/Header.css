@@ -94,10 +94,13 @@
 /* User Menu with Dropdown */
 .user-menu {
   position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .profile-button {
-  margin-left: 30px;  
+  margin-left: 0;  
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -226,6 +229,123 @@
 
 .dropdown-item.logout:hover {
   background-color: #FEE2E2;
+}
+
+.notifications-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--border-gray);
+  border-radius: 50%;
+  background-color: var(--white);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.notifications-button:hover {
+  border-color: var(--primary-blue);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+}
+
+.notif-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background-color: #EF4444;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  padding: 3px 6px;
+  border-radius: 999px;
+  min-width: 20px;
+  text-align: center;
+}
+
+.notifications-dropdown {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  background-color: var(--white);
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  width: 360px;
+  max-height: 420px;
+  overflow: hidden;
+  z-index: 1001;
+}
+
+.notifications-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border-gray);
+}
+
+.mark-all-btn {
+  background: none;
+  border: none;
+  color: var(--primary-blue);
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.notif-list {
+  max-height: 360px;
+  overflow-y: auto;
+}
+
+.notif-empty {
+  padding: 1rem;
+  color: var(--dark-gray);
+  text-align: center;
+}
+
+.notif-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--light-gray);
+}
+
+.notif-item.unread {
+  background-color: #F3F4F6;
+}
+
+.notif-content {
+  flex: 1;
+}
+
+.notif-title {
+  font-weight: 600;
+  color: var(--dark-gray);
+  margin-bottom: 4px;
+}
+
+.notif-message {
+  color: var(--dark-gray);
+  font-size: 0.95rem;
+}
+
+.notif-meta {
+  margin-top: 6px;
+  color: var(--dark-gray);
+  opacity: 0.7;
+  font-size: 0.8rem;
+}
+
+.notif-read-btn {
+  background: none;
+  border: 1px solid var(--border-gray);
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  color: var(--dark-gray);
 }
 
 /* Responsive */

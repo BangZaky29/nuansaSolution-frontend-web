@@ -68,17 +68,33 @@ const Checkout = () => {
         window.snap.pay(response.data.snap_token, {
           onSuccess: async (result) => {
             console.log('Payment success:', result)
+            
+            // Verify payment status dari Midtrans dan update database
+            try {
+              // Wait a bit for webhook to process (if it comes)
+              await new Promise(resolve => setTimeout(resolve, 2000))
+              
+              // Verify payment dari Midtrans dan update database
+              const verifyResponse = await paymentService.verifyPayment(response.data.order_id)
+              console.log('Payment verification:', verifyResponse)
+              
+              if (verifyResponse.success) {
+                console.log('Payment verified and database updated')
+              }
+            } catch (error) {
+              console.error('Error verifying payment:', error)
+              // Continue anyway, user can check status manually
+            }
+            
             showSuccess('Pembayaran berhasil! Akses Anda akan aktif segera.')
             
-            // Redirect ke halaman success atau dashboard
-            setTimeout(() => {
-              navigate('/payment-success', { 
-                state: { 
-                  orderId: response.data.order_id,
-                  package: selectedPackage 
-                } 
-              })
-            }, 1500)
+            // Redirect ke halaman success
+            navigate('/payment-success', { 
+              state: { 
+                orderId: response.data.order_id,
+                package: selectedPackage 
+              } 
+            })
           },
           
           onPending: (result) => {

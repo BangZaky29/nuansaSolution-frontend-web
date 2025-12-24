@@ -1,10 +1,9 @@
+// src/services/api.js (UPDATED & EXPANDED)
 import axios from 'axios'
 import storage from '../utils/storage'
 
-// Base URL dari environment variable
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 
-// Create axios instance
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
@@ -12,12 +11,11 @@ const api = axios.create({
   }
 })
 
-// Request interceptor - tambahkan token ke setiap request
+// Request interceptor
 api.interceptors.request.use(
   (config) => {
     const token = storage.getToken()
     if (token) {
-      // Cek apakah token masih valid
       if (!storage.isTokenValid()) {
         storage.clearAuth()
         window.location.href = '/login'
@@ -27,17 +25,14 @@ api.interceptors.request.use(
     }
     return config
   },
-  (error) => {
-    return Promise.reject(error)
-  }
+  (error) => Promise.reject(error)
 )
 
-// Response interceptor - handle errors
+// Response interceptor
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Token expired atau invalid, clear auth dan redirect ke login
       storage.clearAuth()
       window.location.href = '/login'
     }
@@ -45,65 +40,37 @@ api.interceptors.response.use(
   }
 )
 
-// Auth Services
+// ============================================
+// AUTH SERVICES (existing)
+// ============================================
 export const authService = {
-  // Register user baru
   register: async (email, phone, password) => {
     try {
       const response = await api.post('/auth/register', {
-        email,
-        phone,
-        password,
-        password_confirm: password
+        email, phone, password, password_confirm: password
       })
       return response.data
     } catch (error) {
-      // Re-throw error agar bisa ditangani di AuthContext
       throw error
     }
   },
 
-  // Login user
   login: async (email, password) => {
-    const response = await api.post('/auth/login', {
-      email,
-      password
-    })
+    const response = await api.post('/auth/login', { email, password })
     return response.data
   },
 
-  // Logout user
   logout: async () => {
     const response = await api.post('/auth/logout')
     return response.data
   }
 }
 
-// User Services
-export const userService = {
-  // Check user access
-  checkAccess: async (userId) => {
-    const response = await api.get(`/user/${userId}/access`)
-    return response.data
-  },
-
-  // Get user profile
-  getProfile: async (userId) => {
-    const response = await api.get(`/user/${userId}/profile`)
-    return response.data
-  },
-
-  // Get user orders
-  getOrders: async (userId, status) => {
-    const params = status ? { status } : {}
-    const response = await api.get(`/user/${userId}/orders`, { params })
-    return response.data
-  }
-}
-
-// Payment Services
+// ============================================
+// PAYMENT SERVICES
+// ============================================
 export const paymentService = {
-  // Create payment
+  // Create payment - sesuai dengan backend: package_name, gross_amount, payment_method
   createPayment: async (userId, packageName, grossAmount, paymentMethod = 'va_bca') => {
     try {
       const response = await api.post('/payment/create', {
@@ -114,37 +81,17 @@ export const paymentService = {
       })
       return response.data
     } catch (error) {
-      let errorMessage = 'Gagal membuat pembayaran'
-      
-      if (error.response) {
-        switch (error.response.status) {
-          case 400:
-            errorMessage = error.response.data?.message || 'Data pembayaran tidak valid'
-            break
-          case 401:
-            errorMessage = 'Anda harus login terlebih dahulu'
-            break
-          case 500:
-            errorMessage = 'Server error. Silakan coba lagi nanti'
-            break
-          default:
-            errorMessage = error.response.data?.message || errorMessage
-        }
-      } else if (error.request) {
-        errorMessage = 'Tidak dapat terhubung ke server'
-      }
-      
       return {
         success: false,
-        error: errorMessage
+        error: error.response?.data?.message || 'Gagal membuat pembayaran'
       }
     }
   },
 
-  // Check payment status
+  // Check payment status - sesuai dengan backend endpoint: /payment/status/:order_id
   checkStatus: async (orderId) => {
     try {
-      const response = await api.get(`/payment/${orderId}/status`)
+      const response = await api.get(`/payment/status/${orderId}`)
       return response.data
     } catch (error) {
       return {
@@ -154,30 +101,173 @@ export const paymentService = {
     }
   },
 
-  // Cancel payment
-  cancelPayment: async (orderId) => {
+  // Verify payment from Midtrans - sesuai dengan backend endpoint: /payment/verify/:order_id
+  verifyPayment: async (orderId) => {
     try {
-      const response = await api.post(`/payment/${orderId}/cancel`)
+      const response = await api.post(`/payment/verify/${orderId}`)
       return response.data
     } catch (error) {
       return {
         success: false,
-        error: error.response?.data?.message || 'Gagal membatalkan pembayaran'
+        error: error.response?.data?.message || 'Gagal memverifikasi pembayaran'
       }
     }
   },
 
-  // Get user payment history
-  getPaymentHistory: async (userId) => {
+  // Resume payment - sesuai dengan backend endpoint: /payment/resume/:order_id
+  resumePayment: async (orderId) => {
     try {
-      const response = await api.get(`/payment/history/${userId}`)
+      const response = await api.post(`/payment/resume/${orderId}`)
+      return response.data
+    } catch (error) {
+      console.error('Resume payment API error:', error)
+      return {
+        success: false,
+        error: error.response?.data?.message || error.message || 'Gagal melanjutkan pembayaran'
+      }
+    }
+  },
+
+  // Cancel payment - sesuai dengan backend endpoint: /payment/cancel/:order_id
+  cancelPayment: async (orderId) => {
+    try {
+      const response = await api.post(`/payment/cancel/${orderId}`)
+      return response.data
+    } catch (error) {
+      console.error('Cancel payment API error:', error)
+      return {
+        success: false,
+        error: error.response?.data?.message || error.message || 'Gagal membatalkan pembayaran'
+      }
+    }
+  }
+}
+
+// ============================================
+// FEATURE SERVICES
+// ============================================
+export const featureService = {
+  getAllFeatures: async () => {
+    try {
+      const response = await api.get('/features/all')
+      return response.data
+    } catch (error) {
+      throw error
+    }
+  },
+  getMySubscription: async () => {
+    try {
+      const response = await api.get('/features/my-subscription')
+      return response.data
+    } catch (error) {
+      throw error
+    }
+  },
+  checkFeatureAccess: async (featureCode) => {
+    try {
+      const response = await api.post('/features/check-access', {
+        feature_code: featureCode
+      })
+      return response.data
+    } catch (error) {
+      throw error
+    }
+  },
+  getUsageHistory: async (limit = 50) => {
+    try {
+      const response = await api.get('/features/usage-history', {
+        params: { limit }
+      })
+      return response.data
+    } catch (error) {
+      throw error
+    }
+  }
+}
+
+export const documentService = {
+  generateSuratPerjanjian: async (data) => {
+    try {
+      const response = await api.post('/features/documents/generate-surat-perjanjian', data)
       return response.data
     } catch (error) {
       return {
         success: false,
-        error: error.response?.data?.message || 'Gagal mengambil riwayat pembayaran'
+        error: error.response?.data?.message || 'Gagal generate dokumen'
       }
     }
+  },
+  generateSuratKuasa: async (data) => {
+    try {
+      const response = await api.post('/features/documents/generate-surat-kuasa', data)
+      return response.data
+    } catch (error) {
+      return {
+        success: false,
+        error: error.response?.data?.message || 'Gagal generate dokumen'
+      }
+    }
+  },
+  generateSuratPermohonan: async (data) => {
+    try {
+      const response = await api.post('/features/documents/generate-surat-permohonan', data)
+      return response.data
+    } catch (error) {
+      return {
+        success: false,
+        error: error.response?.data?.message || 'Gagal generate dokumen'
+      }
+    }
+  }
+}
+
+export const notificationService = {
+  getNotifications: async (limit = 20) => {
+    try {
+      const response = await api.get('/notifications', {
+        params: { limit }
+      })
+      return response.data
+    } catch (error) {
+      throw error
+    }
+  },
+  markAsRead: async (notificationId) => {
+    try {
+      const response = await api.put(`/notifications/${notificationId}/read`)
+      return response.data
+    } catch (error) {
+      throw error
+    }
+  },
+  markAllAsRead: async () => {
+    try {
+      const response = await api.put('/notifications/mark-all-read')
+      return response.data
+    } catch (error) {
+      throw error
+    }
+  }
+}
+
+// ============================================
+// USER SERVICES (existing - keep as is)
+// ============================================
+export const userService = {
+  checkAccess: async (userId) => {
+    const response = await api.get(`/user/${userId}/access`)
+    return response.data
+  },
+
+  getProfile: async (userId) => {
+    const response = await api.get(`/user/${userId}/profile`)
+    return response.data
+  },
+
+  getOrders: async (userId, status) => {
+    const params = status ? { status } : {}
+    const response = await api.get(`/user/${userId}/orders`, { params })
+    return response.data
   }
 }
 

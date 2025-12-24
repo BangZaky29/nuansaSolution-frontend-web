@@ -13,11 +13,16 @@ const PaymentSuccess = () => {
 
   useEffect(() => {
     // Auto redirect after 5 seconds
+    if (countdown <= 0) return
+    
     const timer = setInterval(() => {
       setCountdown((prev) => {
         if (prev <= 1) {
           clearInterval(timer)
-          navigate('/')
+          // Use setTimeout to avoid setState during render
+          setTimeout(() => {
+            navigate('/')
+          }, 0)
           return 0
         }
         return prev - 1
@@ -25,7 +30,7 @@ const PaymentSuccess = () => {
     }, 1000)
 
     return () => clearInterval(timer)
-  }, [navigate])
+  }, [navigate, countdown])
 
   return (
     <div className="payment-status-container">
@@ -80,10 +85,10 @@ const PaymentSuccess = () => {
 
             <button 
               className="btn btn-secondary btn-large"
-              onClick={() => navigate('/dashboard')}
+              onClick={() => navigate('/profile')}
             >
               <ArrowRight size={20} />
-              Lihat Dashboard
+              Lihat Profil
             </button>
           </div>
 

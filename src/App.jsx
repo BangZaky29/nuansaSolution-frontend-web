@@ -7,6 +7,7 @@ import Register from './pages/Register'
 import Checkout from './components/pricing/Checkout'
 import PaymentSuccess from './pages/PaymentSuccess'
 import PaymentPending from './pages/PaymentPending'
+import Profile from './pages/Profile'
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -68,9 +69,18 @@ function App() {
             } 
           />
 
+          {/* Protected Routes - Profile */}
+          <Route 
+            path="/profile" 
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            } 
+          />
+
           {/* Future Routes */}
           <Route path="/dashboard" element={<div>Dashboard Coming Soon</div>} />
-          <Route path="/profile" element={<div>Profile Coming Soon</div>} />
           <Route path="/settings" element={<div>Settings Coming Soon</div>} />
 
           {/* 404 Not Found */}
