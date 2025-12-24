@@ -49,13 +49,18 @@ api.interceptors.response.use(
 export const authService = {
   // Register user baru
   register: async (email, phone, password) => {
-    const response = await api.post('/auth/register', {
-      email,
-      phone,
-      password,
-      password_confirm: password
-    })
-    return response.data
+    try {
+      const response = await api.post('/auth/register', {
+        email,
+        phone,
+        password,
+        password_confirm: password
+      })
+      return response.data
+    } catch (error) {
+      // Re-throw error agar bisa ditangani di AuthContext
+      throw error
+    }
   },
 
   // Login user
