@@ -4,6 +4,7 @@ import Layout from './components/layout/Layout'
 import Home from './pages/Home'
 import Login from './pages/Login'
 import Register from './pages/Register'
+import Tools from './pages/Tools'
 import Checkout from './components/pricing/Checkout'
 import PaymentSuccess from './pages/PaymentSuccess'
 import PaymentPending from './pages/PaymentPending'
@@ -42,6 +43,7 @@ function App() {
             path="/register" 
             element={user ? <Navigate to="/" /> : <Register />} 
           />
+          <Route path="/tools" element={<Tools />} />
 
           {/* Protected Routes - Require Authentication */}
           <Route 

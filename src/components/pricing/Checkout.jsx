@@ -160,14 +160,19 @@ const Checkout = () => {
               <div className="package-header">
                 <h3>{selectedPackage.name}</h3>
                 <div className="package-price-big">
-                  Rp {selectedPackage.price.toLocaleString('id-ID')}
+                  {selectedPackage.discountRate > 0 && (
+                    <span className="price-strike">Rp {Math.round(selectedPackage.totalHarga).toLocaleString('id-ID')}</span>
+                  )}
+                  <span style={{ marginLeft: selectedPackage.discountRate > 0 ? '8px' : 0 }}>
+                    Rp {Math.round(selectedPackage.hargaAkhir || selectedPackage.price).toLocaleString('id-ID')}
+                  </span>
                 </div>
               </div>
 
               <div className="package-features">
                 <h4>Yang Anda Dapatkan:</h4>
                 <ul>
-                  {selectedPackage.features.map((feature, index) => (
+                  {(selectedPackage.features || []).map((feature, index) => (
                     <li key={index}>
                       <Check size={16} />
                       <span>{feature}</span>
@@ -231,11 +236,27 @@ const Checkout = () => {
             </div>
 
             {/* Total & Pay Button */}
-            <div className="checkout-footer">
+          <div className="checkout-footer">
+              <div className="breakdown">
+                <div className="breakdown-row">
+                  <span className="breakdown-label">Subtotal</span>
+                  <span className="breakdown-value">
+                    Rp {Math.round(selectedPackage.totalHarga ?? selectedPackage.price).toLocaleString('id-ID')}
+                  </span>
+                </div>
+                {selectedPackage.totalDiskon > 0 && (
+                  <div className="breakdown-row">
+                    <span className="breakdown-label">Diskon</span>
+                    <span className="breakdown-value discount">
+                      - Rp {Math.round(selectedPackage.totalDiskon).toLocaleString('id-ID')}
+                    </span>
+                  </div>
+                )}
+              </div>
               <div className="total-section">
                 <span className="total-label">Total Pembayaran:</span>
                 <span className="total-amount">
-                  Rp {selectedPackage.price.toLocaleString('id-ID')}
+                  Rp {Math.round(selectedPackage.hargaAkhir || selectedPackage.price).toLocaleString('id-ID')}
                 </span>
               </div>
 

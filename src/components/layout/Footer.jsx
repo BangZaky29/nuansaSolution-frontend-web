@@ -11,7 +11,7 @@ const Footer = () => {
         <div className="footer-content">
           {/* Company Info */}
           <div className="footer-section">
-            <h3 className="footer-title">Nuansa Legal</h3>
+            <h3 className="footer-title">Nuansa Solution</h3>
             <p className="footer-description">
               Platform layanan legal terpercaya untuk membantu Anda dalam 
               berbagai kebutuhan hukum dengan mudah dan cepat.

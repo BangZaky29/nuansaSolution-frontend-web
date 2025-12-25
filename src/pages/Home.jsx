@@ -1,52 +1,38 @@
-import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { userService } from '../services/api'
-import { useToast } from '../components/common/ToastContainer'
 import { Scale, FileText, Users, Shield, FileCheck, Calculator, Receipt, FileQuestion, Briefcase, Lock } from 'lucide-react'
 import PricingPackages from '../components/pricing/PricingPackages'
 import './Home.css'
+import './Tools.css'
+import { useEffect, useState } from 'react'
+import { userService } from '../services/api'
+import { useToast } from '../components/common/ToastContainer'
 
 const Home = () => {
   const { isAuthenticated, user } = useAuth()
-  const { showError, showInfo } = useToast()
+  const navigate = useNavigate()
+  const { showError } = useToast()
   const [hasAccess, setHasAccess] = useState(false)
-  const [checkingAccess, setCheckingAccess] = useState(false)
 
-  // Check user access on mount and when window gains focus (after payment)
   useEffect(() => {
     const checkAccess = async () => {
       if (!isAuthenticated || !user?.id) {
         setHasAccess(false)
         return
       }
-
-      setCheckingAccess(true)
       try {
-        const response = await userService.checkAccess(user.id)
-        setHasAccess(response.access === true)
-      } catch (error) {
-        console.error('Error checking access:', error)
+        const resp = await userService.checkAccess(user.id)
+        setHasAccess(resp?.access === true)
+      } catch {
         setHasAccess(false)
-      } finally {
-        setCheckingAccess(false)
       }
     }
-
     checkAccess()
+    const onFocus = () => checkAccess()
+    window.addEventListener('focus', onFocus)
+    return () => window.removeEventListener('focus', onFocus)
+  }, [isAuthenticated, user?.id])
 
-    // Refresh access when window gains focus (useful after returning from payment page)
-    const handleFocus = () => {
-      if (isAuthenticated && user?.id) {
-        checkAccess()
-      }
-    }
-
-    window.addEventListener('focus', handleFocus)
-    return () => window.removeEventListener('focus', handleFocus)
-  }, [isAuthenticated, user])
-
-  // Tools data
   const tools = [
     {
       id: 'surat-kuasa',
@@ -60,14 +46,16 @@ const Home = () => {
       title: 'Kalkulator PPh',
       description: 'Hitung Pajak Penghasilan dengan mudah',
       icon: Calculator,
-      url: 'https://nuansasolution.id/calculator-PPH/'
+      url: 'https://nuansasolution.id/calculator-PPH/',
+      isFree: true
     },
     {
       id: 'calculator-properti',
       title: 'Kalkulator Pajak Properti',
       description: 'Hitung pajak properti Anda',
       icon: Calculator,
-      url: 'https://nuansasolution.id/kalkulator-pajak-properti/'
+      url: 'https://nuansasolution.id/kalkulator-pajak-properti/',
+      isFree: true
     },
     {
       id: 'surat-pernyataan',
@@ -93,17 +81,11 @@ const Home = () => {
   ]
 
   const handleToolClick = (tool) => {
-    if (!isAuthenticated) {
-      showError('Silakan login terlebih dahulu untuk mengakses tools')
+    const canAccess = tool.isFree || (isAuthenticated && hasAccess)
+    if (!canAccess) {
+      showError('Anda memerlukan paket aktif untuk mengakses tool ini.')
       return
     }
-
-    if (!hasAccess) {
-      showError('Anda harus memiliki paket aktif untuk mengakses tools. Silakan berlangganan terlebih dahulu.')
-      return
-    }
-
-    // Open link in new tab
     window.open(tool.url, '_blank')
   }
 
@@ -181,21 +163,20 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Tools Section */}
+      {/* Tools Section (Web Layanan) */}
       <section className="tools">
         <div className="container">
           <h2 className="section-title">Web Layanan</h2>
           <div className="tools-grid">
             {tools.map((tool) => {
               const Icon = tool.icon
-              const canAccess = isAuthenticated && hasAccess
-              
+              const canAccess = tool.isFree || (isAuthenticated && hasAccess)
               return (
                 <div
                   key={tool.id}
                   className={`tool-card ${!canAccess ? 'locked' : ''}`}
                   onClick={() => handleToolClick(tool)}
-                  style={{ cursor: canAccess ? 'pointer' : 'not-allowed' }}
+                  style={{ cursor: 'pointer' }}
                 >
                   <div className="tool-icon">
                     {canAccess ? (
@@ -210,6 +191,11 @@ const Home = () => {
                     <div className="tool-lock-badge">
                       <Lock size={16} />
                       <span>Diperlukan Paket Aktif</span>
+                    </div>
+                  )}
+                  {tool.isFree && (
+                    <div className="tool-free-badge">
+                      <span>Gratis</span>
                     </div>
                   )}
                 </div>

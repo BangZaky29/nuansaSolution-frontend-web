@@ -6,7 +6,7 @@ import { useState, useRef, useEffect } from 'react'
 import './Header.css'
 import '../../styles/mobile/Header.mobile.css'
 import LogoImage from '../../assets/NS_blank_02.png'
-import { notificationService } from '../../services/api'
+import { notificationService, userService } from '../../services/api'
 
 
 const Header = () => {
@@ -20,6 +20,7 @@ const Header = () => {
   const notifRef = useRef(null)
   const [unread, setUnread] = useState(0)
   const [notifications, setNotifications] = useState([])
+  const [hasSubscription, setHasSubscription] = useState(false)
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -63,6 +64,25 @@ const Header = () => {
       window.removeEventListener('focus', onFocus)
     }
   }, [isAuthenticated])
+
+  useEffect(() => {
+    const fetchAccess = async () => {
+      if (!isAuthenticated || !user?.email || !user?.id) {
+        setHasSubscription(false)
+        return
+      }
+      try {
+        const accessResp = await userService.checkAccess(user.id)
+        setHasSubscription(accessResp?.access === true)
+      } catch {
+        setHasSubscription(false)
+      }
+    }
+    fetchAccess()
+    const onFocus = () => fetchAccess()
+    window.addEventListener('focus', onFocus)
+    return () => window.removeEventListener('focus', onFocus)
+  }, [isAuthenticated, user?.id, user?.email])
 
   const handleMarkAsRead = async (id) => {
     try {
@@ -127,24 +147,25 @@ const Header = () => {
               />
             </Link>
 
-            {/* <button
+            <button
               className="hamburger-btn"
               aria-label="Toggle navigation"
               onClick={() => setMobileOpen(!mobileOpen)}
             >
               {mobileOpen ? <X size={22} /> : <Menu size={22} />}
-            </button> */}
+            </button>
 
           {/* Navigation */}
-          {/* <nav className="nav">
+          <nav className="nav">
             <Link to="/" className="nav-link">Beranda</Link>
-            <Link to="/layanan" className="nav-link">Layanan</Link>
-            <Link to="/tentang" className="nav-link">Tentang</Link>
-            <Link to="/kontak" className="nav-link">Kontak</Link>
-          </nav> */}
+            <Link to="/tools" className="nav-link">Web Layanan</Link>
+          </nav>
 
           {/* Auth Section */}
           <div className="auth-section">
+            {hasSubscription && (
+              <span className="subscription-badge">Berlangganan</span>
+            )}
             {isAuthenticated ? (
               <div className="user-menu" ref={dropdownRef}>
                 <button 
@@ -254,12 +275,28 @@ const Header = () => {
         {mobileOpen && (
           <div className="mobile-nav">
             <div className="mobile-nav-content">
-              {/* <div className="mobile-links">
+              <div className="mobile-links">
                 <Link to="/" className="mobile-link" onClick={() => setMobileOpen(false)}>Beranda</Link>
-                <Link to="/layanan" className="mobile-link" onClick={() => setMobileOpen(false)}>Layanan</Link>
-                <Link to="/tentang" className="mobile-link" onClick={() => setMobileOpen(false)}>Tentang</Link>
-                <Link to="/kontak" className="mobile-link" onClick={() => setMobileOpen(false)}>Kontak</Link>
-              </div> */}
+                <Link to="/tools" className="mobile-link" onClick={() => setMobileOpen(false)}>Web Layanan</Link>
+                <button
+                  className="mobile-link"
+                  onClick={() => {
+                    setShowNotifications(true)
+                    setShowDropdown(false)
+                    setMobileOpen(false)
+                  }}
+                >
+                  Notifikasi {unread > 0 && <span className="notif-badge" style={{ marginLeft: 8 }}>{unread}</span>}
+                </button>
+                <Link
+                  to={isAuthenticated ? "/profile" : "/login"}
+                  className="mobile-link"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  Account
+                </Link>
+                <Link to="/" className="mobile-link" onClick={() => setMobileOpen(false)}>Langganan Budget</Link>
+              </div>
               <div className="mobile-auth">
                 {isAuthenticated ? (
                   <div className="mobile-user">
