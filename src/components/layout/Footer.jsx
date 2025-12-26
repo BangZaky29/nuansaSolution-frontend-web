@@ -53,11 +53,11 @@ const Footer = () => {
               </li>
               <li>
                 <Phone size={18} />
-                <span>+62 812-3456-7890</span>
+                <span>+62 857-7508-0888</span>
               </li>
               <li>
-                <MapPin size={18} />
-                <span>Jakarta, Indonesia</span>
+                <MapPin size={58} />
+                <span>Perumahan Citoh Cluster Halimun Blok H No. 7, Desa Cibatok 1, Kec. Cibungbulang, Kab. Bogor (16630)</span>
               </li>
             </ul>
           </div>
