@@ -111,7 +111,7 @@ const LoginForm = () => {
             <Lock size={32} />
           </div>
           <h2>Selamat Datang Kembali</h2>
-          <p>Masuk ke akun Nuansa Legal Anda</p>
+          <p>Masuk ke akun Nuansa Solution Anda</p>
           {redirectPath === 'checkout' && (
             <div className="redirect-info">
               <AlertCircle size={16} />

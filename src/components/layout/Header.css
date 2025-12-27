@@ -76,7 +76,7 @@
 
 @media (max-width: 480px) {
   .logo-image {
-    height: 42px;
+    height: 148px;
   }
 }
 
@@ -87,7 +87,7 @@
   gap: var(--space-2xl);
   flex: 1;
   justify-content: center;
-  margin-left: 420px;
+  margin-left: 520px;
 }
 
 @media (max-width: 768px) {

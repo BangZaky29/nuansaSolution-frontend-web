@@ -45,19 +45,23 @@ const Footer = () => {
             <ul className="footer-contact">
               <li>
                 <Mail size={18} />
-                <span>info@nuansalegal.com</span>
+                <span>cs@nuansasolution.id</span>
               </li>
               <li>
                 <Mail size={18} />
-                <span>info@nuansaSolution.com</span>
+                <span>info@nuansasolution.id</span>
+              </li>
+              <li>
+                <Mail size={18} />
+                <span>teknis@nuansasolution.id</span>
               </li>
               <li>
                 <Phone size={18} />
-                <span>+62 857-7508-0888</span>
+                <span>+62 896-4444-8721</span>
               </li>
               <li>
                 <MapPin size={58} />
-                <span>Perumahan Citoh Cluster Halimun Blok H No. 7, Desa Cibatok 1, Kec. Cibungbulang, Kab. Bogor (16630)</span>
+                <span>Perumahan Citoh Cluster Halimun Blok H. 7 No. 7, Desa Cibatok 1, Kec. Cibungbulang, Kab. Bogor (16630)</span>
               </li>
             </ul>
           </div>
