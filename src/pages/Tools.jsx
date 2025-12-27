@@ -50,22 +50,6 @@ const Tools = () => {
       url: 'https://nuansasolution.id/surat-kuasa/'
     },
     {
-      id: 'calculator-pph',
-      title: 'Kalkulator PPh',
-      description: 'Hitung Pajak Penghasilan dengan mudah',
-      icon: Calculator,
-      url: 'https://nuansasolution.id/calculator-PPH/',
-      isFree: true
-    },
-    {
-      id: 'calculator-properti',
-      title: 'Kalkulator Pajak Properti',
-      description: 'Hitung pajak properti Anda',
-      icon: Calculator,
-      url: 'https://nuansasolution.id/kalkulator-pajak-properti/',
-      isFree: true
-    },
-    {
       id: 'surat-pernyataan',
       title: 'Surat Pernyataan',
       description: 'Buat surat pernyataan resmi',
@@ -85,6 +69,20 @@ const Tools = () => {
       description: 'Buat surat perintah kerja',
       icon: Briefcase,
       url: 'https://nuansasolution.id/surat-perintah-kerja/'
+    },
+    {
+      id: 'surat-jalan',
+      title: 'Surat Jalan',
+      description: 'Buat surat jalan resmi',
+      icon: Briefcase,
+      url: 'https://nuansasolution.id/surat-jalan/'
+    },
+    {
+      id: 'invoice',
+      title: 'Invoice',
+      description: 'Buat invoice resmi',
+      icon: FileText,
+      url: 'https://nuansasolution.id/invoice/'
     }
   ]
 

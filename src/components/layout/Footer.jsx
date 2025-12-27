@@ -3,7 +3,6 @@ import { Mail, Phone, MapPin } from 'lucide-react'
 import './Footer.css'
 
 const Footer = () => {
-  const currentYear = new Date().getFullYear()
 
   return (
     <footer className="footer">
@@ -61,7 +60,7 @@ const Footer = () => {
               </li>
               <li>
                 <MapPin size={58} />
-                <span>Perumahan Citoh Cluster Halimun Blok H. 7 No. 7, Desa Cibatok 1, Kec. Cibungbulang, Kab. Bogor (16630)</span>
+                <span>Perumahan Citoh Cluster Halimun Blok H No. 7, Desa Cibatok 1, Kec. Cibungbulang, Kab. Bogor (16630)</span>
               </li>
             </ul>
           </div>
@@ -69,7 +68,7 @@ const Footer = () => {
 
         {/* Bottom Bar */}
         <div className="footer-bottom">
-          <p>&copy; {currentYear} Nuansa Legal. All rights reserved.</p>
+          <p>&copy; 2022 Nuansa Solution. All rights reserved.</p>
           <p>Made with ❤️ in Indonesia</p>
         </div>
       </div>
