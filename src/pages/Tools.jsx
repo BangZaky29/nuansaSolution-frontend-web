@@ -4,7 +4,13 @@ import { userService } from '../services/api'
 import { useToast } from '../components/common/ToastContainer'
 import { FileCheck, Calculator, Receipt, FileQuestion, Briefcase, Lock } from 'lucide-react'
 import './Tools.css'
-
+import {
+  FileText,
+  Wrench,
+  Settings,
+  HelpCircle,
+  // tambahkan semua ikon lain yang digunakan di Tools.jsx
+} from 'lucide-react';
 const Tools = () => {
   const { isAuthenticated, user } = useAuth()
   const { showError } = useToast()
