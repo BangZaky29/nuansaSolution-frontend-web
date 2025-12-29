@@ -6,6 +6,11 @@
 /* Import Design System Foundation */
 @import url('./styles/design-system.css');
 
+/* Import Responsive Styles */
+@import url('./styles/responsive/mobile.css');
+@import url('./styles/responsive/tablet.css');
+@import url('./styles/responsive/desktop.css');
+
 /* ROOT ELEMENT */
 #root {
   min-height: 100vh;

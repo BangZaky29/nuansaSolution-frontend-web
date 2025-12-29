@@ -1,0 +1,281 @@
+/* ============================================
+   DESKTOP-SPECIFIC STYLES
+   Breakpoint: min-width 1025px
+   ============================================ */
+
+@media (min-width: 1025px) {
+  /* CONTAINER */
+  .container {
+    max-width: var(--container-xl);
+    padding-left: var(--space-2xl);
+    padding-right: var(--space-2xl);
+  }
+
+  /* GRID */
+  .grid-desktop-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .grid-desktop-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .grid-desktop-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  /* SPACING */
+  .section {
+    padding: var(--space-4xl) 0;
+  }
+
+  /* SIDEBAR LAYOUT */
+  .layout-with-sidebar {
+    display: flex;
+    gap: var(--space-2xl);
+  }
+
+  .sidebar {
+    position: sticky;
+    top: var(--space-xl);
+    width: 280px;
+    height: fit-content;
+    flex-shrink: 0;
+  }
+
+  .sidebar.collapsed {
+    width: 80px;
+  }
+
+  .main-content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* NAVIGATION */
+  .nav-desktop-horizontal {
+    flex-direction: row;
+    gap: var(--space-xl);
+  }
+
+  /* CARDS */
+  .card-grid-desktop {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+
+  /* HOVER STATES */
+  .hover-lift:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-2xl);
+  }
+
+  .hover-scale:hover {
+    transform: scale(1.05);
+  }
+
+  /* STICKY ELEMENTS */
+  .sticky-desktop {
+    position: sticky;
+    top: var(--space-xl);
+  }
+
+  /* MULTI-COLUMN */
+  .two-column-desktop {
+    column-count: 2;
+    column-gap: var(--space-2xl);
+  }
+
+  .three-column-desktop {
+    column-count: 3;
+    column-gap: var(--space-2xl);
+  }
+
+  /* HIDE ON DESKTOP */
+  .hide-desktop {
+    display: none !important;
+  }
+
+  /* SHOW ONLY ON DESKTOP */
+  .show-desktop {
+    display: block !important;
+  }
+
+  .show-desktop-flex {
+    display: flex !important;
+  }
+
+  .show-desktop-grid {
+    display: grid !important;
+  }
+
+  /* FORMS */
+  .form-desktop-inline {
+    display: flex;
+    gap: var(--space-lg);
+    align-items: flex-end;
+  }
+
+  .form-desktop-grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-lg);
+  }
+
+  .form-desktop-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-lg);
+  }
+
+  /* MODALS */
+  .modal-desktop-large {
+    max-width: var(--container-lg);
+  }
+
+  /* HEADER */
+  .header-desktop-transparent {
+    background: transparent;
+    backdrop-filter: blur(10px);
+  }
+
+  /* FOOTER */
+  .footer-desktop-columns {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-2xl);
+  }
+
+  /* PRICING/PACKAGE CARDS */
+  .pricing-grid {
+    grid-template-columns: repeat(4, 1fr);
+    max-width: var(--container-2xl);
+  }
+
+  /* TOOLS GRID */
+  .tools-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  /* PROFILE LAYOUT */
+  .profile-layout-desktop {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: var(--space-2xl);
+  }
+
+  /* DASHBOARD GRID */
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: var(--space-xl);
+  }
+
+  /* SPACING UTILITIES DESKTOP */
+  .p-desktop-lg {
+    padding: var(--space-lg);
+  }
+
+  .p-desktop-xl {
+    padding: var(--space-xl);
+  }
+
+  .p-desktop-2xl {
+    padding: var(--space-2xl);
+  }
+
+  .m-desktop-auto {
+    margin: auto;
+  }
+
+  /* WIDTH */
+  .w-desktop-auto {
+    width: auto;
+  }
+
+  .w-desktop-half {
+    width: 50%;
+  }
+
+  .max-w-desktop-lg {
+    max-width: var(--container-lg);
+  }
+
+  .max-w-desktop-xl {
+    max-width: var(--container-xl);
+  }
+
+  /* GAP */
+  .gap-desktop-lg {
+    gap: var(--space-lg);
+  }
+
+  .gap-desktop-xl {
+    gap: var(--space-xl);
+  }
+
+  .gap-desktop-2xl {
+    gap: var(--space-2xl);
+  }
+
+  /* TEXT ALIGNMENT */
+  .text-left-desktop {
+    text-align: left;
+  }
+
+  .text-center-desktop {
+    text-align: center;
+  }
+
+  .text-right-desktop {
+    text-align: right;
+  }
+
+  /* FLEX */
+  .flex-desktop-row {
+    flex-direction: row;
+  }
+
+  .flex-desktop-col {
+    flex-direction: column;
+  }
+
+  /* OVERFLOW */
+  .overflow-desktop-visible {
+    overflow: visible;
+  }
+
+  .overflow-desktop-hidden {
+    overflow: hidden;
+  }
+}
+
+/* LARGE DESKTOP */
+@media (min-width: 1280px) {
+  .container-large {
+    max-width: var(--container-2xl);
+  }
+
+  .grid-large-5 {
+    grid-template-columns: repeat(5, 1fr);
+  }
+
+  .pricing-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-2xl);
+  }
+}
+
+/* ULTRA WIDE */
+@media (min-width: 1600px) {
+  .container-ultra {
+    max-width: 1800px;
+  }
+
+  .grid-ultra-6 {
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  .pricing-grid {
+    max-width: 1800px;
+  }
+}
